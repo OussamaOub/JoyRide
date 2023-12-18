@@ -1,0 +1,17 @@
+.logo-container {
+  /* absolute top-5 left-10 w-32 */
+  position: absolute;
+  top: 1.25rem;
+  left: 2.5rem;
+  width: 8rem;
+  /* fill: red !important; */
+  /* color: aquamarine !important; */
+  @media (max-width: 768px) {
+    /* absolute top-5 left-10 w-32 */
+    position: absolute;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4rem;
+  }
+}
