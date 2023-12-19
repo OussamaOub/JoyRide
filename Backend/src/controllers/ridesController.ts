@@ -124,8 +124,8 @@ export async function getLastRideUsers(req: AuthReq, res: Response) {
   if (req.user?.id) {
     try {
       const user = req.user;
-      const result = await prisma.$queryRaw`
-      SELECT * FROM get_users_who_booked_same_post(${user.id})` as { totalPassengers: number }[];
+      // const result = await prisma.$queryRaw`
+      // -- SELECT * FROM get_users_who_booked_same_post(${user.id})` as { totalPassengers: number }[];
       // console.log("This is the rerewfuionfuerfbiuerrfbiewun", result);
 // -- SELECT DISTINCT u.*
 // -- FROM "User" u
@@ -155,7 +155,7 @@ export async function getLastRideUsers(req: AuthReq, res: Response) {
       // console.log("riders", result.map((r: any) => r.username));
       // console.log(count);
 
-      res.status(201).json(result);
+      res.status(201).json("result");
     } catch (error) {
       // Handle errors
       console.error('Error:', error);
@@ -237,3 +237,27 @@ export const getUserFinancialData = async (req: AuthReq, res: Response) => {
     res.status(500).json({ message: 'Unexpected Error', error });
   }
 };
+
+
+export async function getUserExpectedEarnings(req: AuthReq, res: Response) {
+  if (req.user?.id) {
+    try {
+      const user = req.user;
+
+      // Query the view using $queryRaw
+      const result = await prisma.$queryRaw`SELECT calculate_expected_earnings(${user.id})` as { calculate_expected_earnings: number }[];
+      // console.log(result);
+      const count = Number(result[0]?.calculate_expected_earnings) || 0;
+      res.status(201).json(count);
+    } catch (error) {
+      // Handle errors
+      console.error('Error:', error);
+      res.status(500).json({ message: 'Unexpected Error', error });
+    } finally {
+      // Close the Prisma client connection
+      await prisma.$disconnect();
+    }
+  } else {
+    res.status(501).json({ message: 'User not passed' });
+  }
+}

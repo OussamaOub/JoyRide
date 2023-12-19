@@ -70,13 +70,13 @@ export const fetchPosts = async (req: Request, res: Response) => {
     try {
       const posts = await prisma.post.findMany({
         where:{
-          // published: true,
+          published: true,
           departureDateTime: {
             gte: new Date(),
           },
+          status: "pending",
       
         },
-        take: 10,
         orderBy: [
           {
            createdAt: 'desc', 

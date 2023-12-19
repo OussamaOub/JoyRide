@@ -42,9 +42,10 @@ export default function RidesPage() {
   const [userpassengerscount, setuserpassengerscount] = useState(0)
   const [usercanceledrides, setusercanceledrides] = useState(0)
   const [userspendings, setuserspendings] = useState(0)
-  const [lastuserpassengers, setlastuserpassengers] = useState<
-    PassengerProps[]
-  >([])
+  const [userexpectedearnings, setuserexpectedearnings] = useState(0)
+  // const [lastuserpassengers, setlastuserpassengers] = useState<
+  // PassengerProps[]
+  // >([])
 
   const data = [
     {
@@ -99,7 +100,8 @@ export default function RidesPage() {
       setuserpassengerscount(0)
       setusercanceledrides(0)
       setuserspendings(0)
-      setlastuserpassengers([])
+      setuserexpectedearnings(0)
+      // setlastuserpassengers([])
 
       try {
         const [
@@ -110,7 +112,8 @@ export default function RidesPage() {
           userpassengerscount,
           canceledridescount,
           userspendings,
-          lastuserpassengers
+          userexpectedearnings
+          // lastuserpassengers
         ] = await Promise.all([
           axios.get(`${apiurl}/api/posts/getAllUserPosts`, {
             withCredentials: true
@@ -133,9 +136,13 @@ export default function RidesPage() {
           axios.get(`${apiurl}/api/rides/getUserSpendings`, {
             withCredentials: true
           }),
-          axios.get(`${apiurl}/api/rides/getLastRideUsers`, {
+          axios.get(`${apiurl}/api/rides/getUserExpectedEarnings`, {
             withCredentials: true
           })
+
+          // axios.get(`${apiurl}/api/rides/getLastRideUsers`, {
+          //   withCredentials: true
+          // })
         ])
 
         if (
@@ -175,10 +182,14 @@ export default function RidesPage() {
           setuserspendings(userspendings.data)
         }
 
-        if (lastuserpassengers.status === 201) {
-          setlastuserpassengers(lastuserpassengers.data)
-          // console.log(lastuserpassengers.data)
+        if (userexpectedearnings.status === 201) {
+          setuserexpectedearnings(userexpectedearnings.data)
         }
+
+        // if (lastuserpassengers.status === 201) {
+        //   setlastuserpassengers(lastuserpassengers.data)
+        //   // console.log(lastuserpassengers.data)
+        // }
       } catch (error) {
         console.error('Error fetching data:', error)
       }
@@ -285,17 +296,19 @@ export default function RidesPage() {
           <div className="grid grid-cols-3 gap-4">
             <div className="grid grid-rows-3 p-4 bg-white shadow-lg text-black rounded-lg">
               <div className="flex items-center justify-between">
-                <h1 className="font-semibold">Total Issues Reported</h1>
-                <FaExclamationTriangle size={24} className="text-red-500" />
+                <h1 className="font-semibold">Expected Earnings</h1>
+                <p className="text-red-500 font-bold" aria-setsize={24}>
+                  MAD
+                </p>
               </div>
               <h1 className="text-3xl font-semibold text-red-500">
-                {userissues.length}
+                {userexpectedearnings}
               </h1>
               <h1 className="text-sm text-gray-700">Overall count </h1>
             </div>
             <div className="grid grid-rows-3 p-4 bg-white shadow-lg text-black rounded-lg">
               <div className="flex items-center justify-between">
-                <h1 className="font-semibold">Your total spendings</h1>
+                <h1 className="font-semibold">Total Spendings</h1>
                 <MdMoneyOff size={24} className="text-red-500" />
               </div>
               <h1 className="text-3xl font-semibold">{userspendings}</h1>
@@ -342,19 +355,18 @@ export default function RidesPage() {
                 </tr>
               </thead>
               <tbody>
-                {lastuserpassengers &&
-                  lastuserpassengers.map((row, index) => (
-                    <tr
-                      key={index}
-                      className={index % 2 === 0 ? 'bg-gray-50' : 'bg-gray-200'}
-                    >
-                      <td className="py-3 px-2">{row?.firstname}</td>
-                      <td className="py-2 px-2">{row?.lastname}</td>
-                      <td className="py-2 px-2">{row?.email}</td>
-                      {/* <td className="py-2 px-2">{row?.destination}</td> */}
-                      {/* <td className="py-2 px-2">{row?.dateOfRide}</td> */}
-                    </tr>
-                  ))}
+                {data.map((row, index) => (
+                  <tr
+                    key={index}
+                    className={index % 2 === 0 ? 'bg-gray-50' : 'bg-gray-200'}
+                  >
+                    <td className="py-3 px-2">{row?.firstName}</td>
+                    <td className="py-2 px-2">{row?.lastName}</td>
+                    <td className="py-2 px-2">{row?.email}</td>
+                    {/* <td className="py-2 px-2">{row?.destination}</td> */}
+                    {/* <td className="py-2 px-2">{row?.dateOfRide}</td> */}
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
